@@ -2,19 +2,41 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "DCISM.org Tutorial",
+  title: "Tutorial",
   description: "A tutorial website for hosting web applications using the dicsm.org web server.",
+  head: [
+    ['link', { rel: 'icon', href: '/logo_light.svg' }], // Path to your icon
+  ],
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
+    logo: {
+      light: '/logo.svg',
+      dark: '/logo_light.svg',
+    },
+    outline: {
+      level: [2, 3], 
+      label: 'On this page',
+    },
+    lastUpdated: {
+      text: 'Updated at',
+      formatOptions: {
+        dateStyle: 'full',
+        timeStyle: 'medium'
+      }
+    },
     nav: [
 
     ],
-
+    search: {
+      provider: 'local',
+    },
     sidebar: [
       {
         text: 'Home',
         items: [
           { text: 'Getting Started', link: '/' },
+          { text: 'Subdomains', link: '/subdomains' },
+          { text: 'Built-in Tools', link: '/tools' },
+          { text: 'Databases', link: '/databases' },
         ],
         collapsed: false,
       },
@@ -29,13 +51,13 @@ export default defineConfig({
       }
     ],
 
-    docFooter: {
-      prev: false,
-      next: false,
-    },
-
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+    ],
+  },
+  markdown: {
+    image: {
+      lazyLoading: true
+    }
   }
 })
