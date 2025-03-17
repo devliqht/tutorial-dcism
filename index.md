@@ -37,6 +37,8 @@ An SFTP client is required in order to establish connection and sync with the SF
 ### Configure your SFTP Connection
 In your SFTP client, establish a connection with the SFTP server. Note: It varies from client to client on how to establish a connection, below is an example for FileZilla client users:
 
+![FILEZILLA_TUT_1](/filezilla_tut_1.png)
+
 ![FILEZILLA](/filezilla.png)
 
 - Host: `web.dcism.org`

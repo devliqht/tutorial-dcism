@@ -14,6 +14,7 @@ To create one:
    
 ::: warning NOTE
 - Subdomain names must be unique across all `dcism.org` users.
+- Subdomain names cannot contain **underscore**.
 :::
 
 ![SUBDOMAINS](/subdomains.png)
@@ -21,3 +22,4 @@ To create one:
 Once a subdomain is created, it also creates a folder in your remote file directory named after your subdomain. You can use this folder to upload files, or use [Git Version Control](https://git-scm.com/) in order to manage folders and files.
 
 ![TUTORIAL_DIRECTORY](/tutorial_directory.png)
+

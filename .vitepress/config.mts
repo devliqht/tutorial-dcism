@@ -45,6 +45,7 @@ export default defineConfig({
           { text: 'Static Sites', link: '/static' },
           { text: 'PHP Server', link: '/php' },
           { text: 'Node.js Applications', link: '/node' },
+          { text: 'React, Vite, Next.js', link: '/vitenext' },
         ],
         collapsed: false,
       }

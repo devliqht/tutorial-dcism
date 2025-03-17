@@ -58,7 +58,7 @@ To use the config file, simply import it in your db connection file (or anything
 ```
 
 ## Developer Note
-From experience, you cannot remotely access the database outside of your subdomain/outside of the web server. This is because localhost:3306 returns a **loopback address** (`127.0.0.1`) to your **own** machine/server. Accessing localhost on your local machine will find a database on YOUR local machine, not the server. I also tried setting the `DB_HOST` to `dbadmin.dcism.org` in the hopes that I could access my database remotely (and even from the web server itself), but to no avail.
+From experience, you cannot remotely access the database outside of your subdomain/outside of the web server. This is because localhost:3306 returns a **loopback address** (`127.0.0.1`) to your **own** machine/server. Accessing `localhost` on your local machine will find a database on YOUR local machine, not the server. I also tried setting the `DB_HOST` to `dbadmin.dcism.org` in the hopes that I could access my database remotely (and even from the web server itself), but to no avail.
 
 ### So, how then?
 As of now, I have **not seen a way** to access the database you created in the DCISM web servers ***remotely***. A tedious workaround I do is I export my local database and import it to my database in the DCISM [phpmyadmin](https://dbadmin.dcism.org). Please note that there are also other methods such as creating a script for syncing or configuring phpmyadmin to allow live sync/remote access, but they require administrator permissions. So, in my case, I have this `config.php` file:
@@ -77,3 +77,14 @@ As of now, I have **not seen a way** to access the database you created in the D
 ?>
 ```
 I have to **comment** and **uncomment** these 4 define variables, essentially ***switching*** between my local database and my DCISM database, whichever I need. When developing, I use my **local database**. If I see that my current development stage is ready for production testing, I switch my `config.php` file to utilize the DCISM database, export my local database, import it to the DCISM web server, and then save and commit changes. ***Phew.***
+
+If you have any other methods as to how to approach this, please **contact me**, or edit this page on github.
+
+## Concrete Steps on PHP Hosting
+1. PHP hosting is the same as [static site](/static.md) hosting. 
+2. When you need to access a database, create a `config.php` file with your define variables.
+3. Set the `DB_HOST` to `localhost:3306`.
+4. Set the `DB_USER` and `DB_NAME` to your database name you created on the [admin control panel](/databases.md).
+5. Set the password.
+6. Create a new `mysqli` connection and pass the `DB_HOST`, `DB_USER`, `DB_PASS` and `DB_NAME` as arguments. Make sure `config.php` is included through `require_once` in your file with the `mysqli` connection.
+7. The database connection should now be working.
