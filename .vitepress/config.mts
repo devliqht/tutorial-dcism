@@ -1,11 +1,10 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Tutorial",
   description: "A tutorial website for hosting web applications using the dicsm.org web server.",
   head: [
-    ['link', { rel: 'icon', href: '/logo_light.svg' }], // Path to your icon
+    ['link', { rel: 'icon', href: '/logo_light.svg' }]
   ],
   themeConfig: {
     logo: {
@@ -13,7 +12,7 @@ export default defineConfig({
       dark: '/logo_light.svg',
     },
     outline: {
-      level: [2, 3], 
+      level: [2, 4], 
       label: 'On this page',
     },
     lastUpdated: {
@@ -52,8 +51,12 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: 'github', link: 'https://github.com/devliqht/tutorial-dcism' }
     ],
+    editLink: {
+      pattern: 'https://github.com/devliqht/tutorial-dcism/edit/main/:path',
+      text: 'Edit this page on GitHub'
+    }
   },
   markdown: {
     image: {

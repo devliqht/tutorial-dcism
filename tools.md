@@ -43,3 +43,7 @@ For example, you can:
 - Run a Node.js app with `node app.js` or a Bun app with `bun run index.js`.
   
 ![BUN](/bun.png)
+
+::: warning DEVELOPER NOTE
+- For some reason, and this is based from my experience (it may vary), Using `node.js` (npm) 'works more' than using `bun`. Out of the three projects I made, this, my vlsm calculator and webdev finals, using `Bun` failed to install important packages and/or failed to completely install a package that caused my builds to fail, but not with `npm`. So, use with caution.
+:::

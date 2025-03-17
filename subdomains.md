@@ -1,5 +1,5 @@
 # Subdomains
-Subdomains are created by accessing your [admin control panel](https://admin.dcism.org/). You can create up to 10 subdomains, and subdomain naming are on a first come first serve basis.
+Subdomains are created by accessing your [admin control panel](https://admin.dcism.org/). You can create up to `10` subdomains, and subdomain naming are on a **first come first serve** basis.
 
 ## Creating a Subdomain
 A subdomain is a custom name added before the base domain `dcism.org`. For example, in `tutorial.dcism.org`:

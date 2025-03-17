@@ -4,6 +4,7 @@ In order to start hosting web applications using the `dcism.org` web server, you
 
 Use the credentials you set for your **DCISM** account (the one you use when you login to DCISM computers).
 
+#### Home Page of [DCISM Admin Panel](https://admin.dcism.org)
 ![HOME PAGE](/home.png)
 
 
@@ -19,10 +20,10 @@ The password to your SSH and SFTP clients is the same password you used to login
 
 ### SSH Command
 ```bash
-ssh -p22077 usc_id@web.dcism.org
+ssh -p22077 sUSC_ID@web.dcism.org
 ```
 
-Replace `usc_id` with your USC ID, in my case it's `22103604@web.dcism.org`
+Replace `USC_ID` with your USC ID, in my case it's `s22103604@web.dcism.org`.
 
 ## Accessing SFTP File Server
 Once SSH and SFTP are enabled on your `dcism.org` web server, you can connect to the SFTP file server to upload, download, or manage your web application files. Follow these steps to access it using an SFTP client.
