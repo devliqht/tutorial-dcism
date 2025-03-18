@@ -20,27 +20,15 @@ RewriteRule (.*) https://127.0.0.1:51920%{REQUEST_URI} [R=301,L]
 RewriteRule (.*) http://127.0.0.1:51920%{REQUEST_URI} [P,L]
 ```
 
-#### Here is an example file structure for a Node.js app (`Vite`):
+#### Here is an example file structure for a Node.js app:
 ```text {2}
 ~/your-subdomain.dcism.org/
 ├── .htaccess              # Apache config to proxy requests to Node.js
-├── dist/                  # Vite build output (static files)
-│   ├── assets/            # Compiled assets (JS, CSS, images)
-│   │   ├── index-abc123.js
-│   │   ├── styles-xyz789.css
-│   │   └── logo-123.png
-│   └── index.html         # Main entry point
-├── src/                   # Vite source files (development)
-├── public/                # Static assets copied to dist/
-├── vite.config.ts         # Vite configuration
-├── package.json           # Project dependencies and scripts
-├── package-lock.json      # Dependency lock file
-├── tsconfig.json          # TypeScript config
-├── tailwind.config.ts     # Tailwind CSS config (if used)
-└── node_modules/          # Node.js dependencies
+├── test.cjs               # Example Node.js app
+├── ...
 ```
 ## Creating a simple Node.js app
-#### test.cjs
+#### `test.cjs`
 ```js 
 // test.cjs
 const http = require('http');
@@ -50,7 +38,7 @@ const server = http.createServer((req, res) => {
 });
 server.listen(51920, () => console.log('Server on 51920'));
 ```
-#### .htaccess
+#### `.htaccess`
 ```apache
 RewriteEngine on
 RewriteRule (.*) http://127.0.0.1:51920%{REQUEST_URI} [P,L] # 51920 Port!

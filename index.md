@@ -1,16 +1,24 @@
-# Getting Started
+# Getting Started with Hosting on the DCISM Web Server
 
-In order to start hosting web applications using the `dcism.org` web server, you first need to access your admin panel https://admin.dcism.org/.
+To begin hosting web applications on the DCISM web server (`web.dcism.org`), you’ll first need to log in to the admin panel at [https://admin.dcism.org/](https://admin.dcism.org).
 
-Use the credentials you set for your **DCISM** account (the one you use when you login to DCISM computers).
+**Credentials:** Use the same username and password you set up for your DCISM account, the one you use to log in to DCISM computers.
 
-#### Home Page of [DCISM Admin Panel](https://admin.dcism.org)
+### Admin Panel Home Page
+Once logged in, you’ll land on the admin panel’s home page. This is where you’ll manage your hosting settings.
+
 ![HOME PAGE](/home.png)
 
+## Enable SSH and SFTP Access
+To upload files (like your website code) and run commands on the server, you need to turn on SSH and SFTP. These tools let you securely connect to the server from your computer.
 
-## Enable SSH and SFTP
+- **SSH**: For running commands (starting a server or checking files).
+- **SFTP**: For uploading and managing your website files.
+  
+### How to Enable Them
+1. In the admin panel, find the options for `SSH` and `SFTP`.
+2. Click "**Enable SSH**".
 
-To access your files and execute CLI commands, you must enable SSH and SFTP protocol on your web server. 
 
 ![SSH](/ssh.png)
 
@@ -18,12 +26,13 @@ To access your files and execute CLI commands, you must enable SSH and SFTP prot
 
 The password to your SSH and SFTP clients is the same password you used to login to the admin panel.
 
-### SSH Command
+### Connect to the Server with SSH
 ```bash
 ssh -p22077 sUSC_ID@web.dcism.org
 ```
-
-Replace `USC_ID` with your USC ID, in my case it's `s22103604@web.dcism.org`.
+::: tip NOTE
+Replace `USC_ID` with your USC ID, in my case it's `s22103604@web.dcism.org`. The DCISM server uses port ``22077`` for SSH connections.
+:::
 
 ## Accessing SFTP File Server
 Once SSH and SFTP are enabled on your `dcism.org` web server, you can connect to the SFTP file server to upload, download, or manage your web application files. Follow these steps to access it using an SFTP client.

@@ -1,49 +1,94 @@
 # Hosting a web application like Vite or Next.js
-After an ***excruciating*** debugging process and back-to-back conversation with my best friend (`Grok`), I have yet to successfully deploy a Vite or Next.js application using the DCISM web server. Here are some issues that I found:
+Hosting modern JavaScript frameworks like **Vite** or **Next.js** on the DCISM web server (`web.dcism.org`) isn’t as simple as uploading static files or PHP. These frameworks often need a running server, which requires some extra steps on DCISM’s setup. Through debugging, I found that `Vite` and `Next.js` don’t work out of the box with the server’s Apache proxy, but a custom Node.js server with `PM2` can get your app live.
 
-![GROK](/grok.png)
-
-### Proxy Issues
-There is an issue with how front-end web applications are served with the current `.htaccess` settings. In my findings, I have noticed that web Applications (like Vite, Next.js with React) are ***not*** served properly on their subdomain proxy (e.g `your-subdomain.dcism.org`).
-
-#### For example, given we have this Next.js properly configured running on the allowed port range:
-![NEXTJS](/nextjs.png)
-
-Opening our subdomain `your-subdomain.dcism.org` it would either throw out a 
-- `404` NextJS not found page
-- `503` Service Unavailable Page
-- `404` Failed to load resources
-- A `MIMP` error
-
-But..
-
+## Build your app
+Assuming you already have a Vite, NextJS or anything equivalent setup in your subdomain folder, build your app with:
 ```bash
-s22103604@web:~/your-subdomain.dcism.org$: curl localhost:51920
+npm run build
 ```
-Doing a `curl` command inside the SSH shell with `localhost:51920` as the target address returns the proper HTML output that should be served by `Vite` or `Next.js`.
+For Vite:
+- Creates a `dist/` folder with your app’s static files (e.g., index.html, assets/).
 
-### Why? I have no idea.
+For Next:
+- Outputs a `.next/` folder or static files if using next export.
 
-Likewise, if I try to do this command to access `localhost:51920` remotely:
+## Setup a custom Node.js server
+Since **Vite**’s preview and **Next.js**’s built-in servers didn’t play nice with **Apache**, create a simple `Node.js` server to serve your files.
+
+### Create `server.cjs`
+In your subdomain folder (e.g., `~/your-subdomain.dcism.org/`), add this file:
+
+```js
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const server = http.createServer((req, res) => {
+  let filePath = path.join(__dirname, 'dist', req.url === '/' ? 'index.html' : req.url);
+  const ext = path.extname(filePath);
+  const mimeTypes = {
+    '.html': 'text/html',
+    '.js': 'application/javascript',
+    '.css': 'text/css',
+    '.png': 'image/png',
+    '.svg': 'image/svg+xml'
+  };
+  const contentType = mimeTypes[ext] || 'application/octet-stream';
+
+  // Handle single-page apps (SPAs) like Vite or Next.js
+  if (!ext && req.url !== '/favicon.ico') {
+    filePath = path.join(__dirname, 'dist', 'index.html');
+  }
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      res.end('Not Found');
+    } else {
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    }
+  });
+});
+
+// Bind to all interfaces (not just localhost)
+server.listen(51920, '0.0.0.0', () => console.log('Server on 51920'));
+```
+
+This script serves your `dist/` files, sets proper `MIME` types (fixing Vite’s errors), and binds to `0.0.0.0` so Apache can reach it.
+
+## Configure apache proxy (`.htaccess`)
+See [Node.js hosting](/node.md) section of the proxy file. Place the `.htaccess` file in the root of your subdomain folder.
+
+### Create `.htaccess`
+```apache
+RewriteEngine on
+RewriteRule (.*) http://127.0.0.1:51920%{REQUEST_URI} [P,L]
+```
+
+## Run and persist with `PM2`
+PM2 is a `Node.js` package for managing `Node.js` applications on a server. It’s like a wrapper for your app, making sure it keeps running, restarts if it crashes, and can even start up again after a server reboot (if with `sudo` permissions, but we **don't** have that here).
+
+The DCISM server doesn’t natively support Vite or Next.js servers, so we used a custom `Node.js` script (server.cjs). We run that script with `PM2`.
+
+### Install `PM2` if not already
 ```bash
-ssh -p 22077 -L 51920:localhost:51920 s22103604@web.dcism.org
+npm install pm2
 ```
-Opening `localhost:51920` in my local machine, it returns the ***correct*** HTML output.
 
-#### This is my output when **previewing** a Vite project with `npm run preview` on Port `51920` accessed through my local machine.
-![HTML_OUTPUT](/html_output.png)
-
-## Conclusions
-- Since normal Node.js applications works (ran with `Node test.cjs` in [Node.js hosting](/node.md)), this means that the proxy is working and Node is working.
-- There is really something wrong with **Vite**, **Next.js**, or any front-end framework in general that the web server cannot process.
-
-## Workarounds
-Instead of hosting a web application with `npm run dev` or `preview` (launches a `Vite dev server` or `NextJS dev server`), you can just build your application (with `npm run build` or equivalent), get its static files (HTML, CSS, JS) and put that on the root directory of your subdomain.
-
-**For example**, Next.JS builds are usually stored in the `out/` folder in your directory, you can execute an mv command to move them out:
+### Start the server
 ```bash
-mv out/* .
+npx pm2 start server.cjs --name "my-app"
 ```
-This is assuming that when you are executing this command, you are at the `root` directory. 
 
-Moving the static files out will let the web server host them as [static files](/static.md), instead of using the proxy logic. Also make sure to ***delete*** the `.htaccess` file if you do it this way, or else the server will try to serve your website as a `Node.js` application instead of a static one.
+### Save the server
+```bash
+npx pm2 save
+```
+
+Your app should now load on your subdomain link (`your-subdomain.dcism.org`). If the server reboots, you will need to manually start this PM2 process again. But, if your app is the one that crashed, it would restart immediately.
+
+## DCISM Server Limitation
+The DCISM web server can’t reliably run **SSR** or **dynamic apps** (like full Next.js or Nuxt.js). When I tried Vite’s preview server or Next.js’s runtime, Apache’s proxy returned `503` Service Unavailable errors. This might be because these frameworks bind to `localhost` (not reachable by Apache), mishandle **MIME** types, or need complex server logic that clashes with DCISM’s Apache setup. Static files with a custom `Node.js` server (like this script) work best, so stick to static exports for compatibility.
+
+Likewise, if you don't want to create the `server.cjs` script, you could always run `npm run build` first and just copy all the files from the build folder out to the root directory, allowing the server to serve it as [static files](/static.md).
