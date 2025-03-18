@@ -48,6 +48,13 @@ export default defineConfig({
           { text: 'React, Vite, Next.js', link: '/vitenext' },
         ],
         collapsed: false,
+      },
+      {
+        text: 'About',
+        items: [
+          { text: 'Acknowledgements', link: '/author' },
+        ],
+        collapsed: false,
       }
     ],
 
